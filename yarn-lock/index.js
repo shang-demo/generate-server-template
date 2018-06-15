@@ -15,7 +15,7 @@ var _path = require("path");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-async function isExists(p) {
+async function checkExists(p) {
   try {
     await (0, _fsExtra.stat)(p);
     return true;
@@ -31,7 +31,7 @@ function getLockName(str) {
   return hash.digest('hex');
 }
 
-function getLockPath({
+async function getLockPath({
   model,
   koaServer,
   senecaClient,
@@ -39,10 +39,11 @@ function getLockPath({
   customerErrors
 }) {
   let name = getLockName([model, koaServer, senecaClient, senecaServer, customerErrors].join('|'));
-  console.info('name: ', name);
+  console.info('lock file name: ', name);
   let file = (0, _path.resolve)(__dirname, name);
+  let isExists = await checkExists(file);
 
-  if (isExists(file)) {
+  if (isExists) {
     return file;
   }
 

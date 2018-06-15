@@ -1,7 +1,5 @@
 "use strict";
 
-var _bluebird = _interopRequireDefault(require("bluebird"));
-
 var _commander = _interopRequireDefault(require("commander"));
 
 var _fsExtra = require("fs-extra");
@@ -14,21 +12,31 @@ var _util = require("./util");
 
 var _userData = require("./user-data");
 
-var _build = require("./build");
+var _Builder = _interopRequireDefault(require("./Builder"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 async function parseArgv() {
   let targetDir;
 
-  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
+  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
     targetDir = target;
   }).parse(process.argv);
 
-  if (_commander.default.templateDir) {
+  let {
+    model,
+    koaServer,
+    senecaClient,
+    senecaServer,
+    customerErrors,
+    templateDir,
+    setTemplateDir
+  } = _commander.default;
+
+  if (setTemplateDir) {
     try {
       let gstConfig = await (0, _userData.setConfig)({
-        templateDir: _commander.default.templateDir
+        templateDir: setTemplateDir
       });
       (0, _util.colorEcho)(JSON.stringify(gstConfig));
     } catch (e) {
@@ -39,21 +47,23 @@ async function parseArgv() {
     process.exit(0);
   }
 
-  let {
-    templateDir
-  } = await (0, _userData.getConfig)();
+  if (!templateDir) {
+    ({
+      templateDir
+    } = await (0, _userData.getConfig)());
+  }
 
   if (!templateDir) {
-    (0, _util.colorEcho)('gst -t <template dir> to set template dir');
+    (0, _util.colorEcho)(' gst -t <use templateDir> or gst --setTemplateDir <set template dir>');
     process.exit(1);
   } // must be a type to generate
 
 
-  if (!_commander.default.koaServer && !_commander.default.senecaClient && !_commander.default.senecaServer) {
-    _commander.default.koaServer = true;
+  if (!koaServer && !senecaClient && !senecaServer) {
+    koaServer = true;
   }
 
-  if (_commander.default.koaServer && _commander.default.senecaServer) {
+  if (koaServer && senecaServer) {
     (0, _util.colorEcho)('koa server or seneca server should be only');
     process.exit(1);
   } // resolve target dir
@@ -92,12 +102,13 @@ async function parseArgv() {
   }
 
   let info = {
-    dir: targetDir,
-    model: _commander.default.model,
-    koaServer: _commander.default.koaServer,
-    senecaClient: _commander.default.senecaClient,
-    senecaServer: _commander.default.senecaServer,
-    customerErrors: _commander.default.customerErrors
+    targetDir,
+    templateDir,
+    model,
+    koaServer,
+    senecaClient,
+    senecaServer,
+    customerErrors
   };
   let message = '';
   Object.keys(info).forEach(key => {
@@ -118,27 +129,12 @@ async function parseArgv() {
     process.exit(1);
   }
 
-  return targetDir;
+  return info;
 }
 
 (async () => {
-  let targetDir = await parseArgv();
-  let arr = [_build.ensureTargetDir, _build.cpBase, _build.buildComponents, _build.buildConfigFile, _build.buildIndexJs, _build.buildPackage];
-  let {
-    model,
-    koaServer,
-    senecaClient,
-    senecaServer,
-    customerErrors
-  } = _commander.default;
-  await _bluebird.default.each(arr, fun => {
-    return fun(targetDir, {
-      model,
-      koaServer,
-      senecaClient,
-      senecaServer,
-      customerErrors
-    });
-  });
+  let result = await parseArgv();
+  let builder = new _Builder.default(result);
+  await builder.run();
 })();
 //# sourceMappingURL=index.js.map
