@@ -17,6 +17,6 @@
   },
   "devDependencies": {},
   "bin": {
-    "stg": "./bin/generate-server-template"
+    "gs": "./bin/generate-server-template"
   }
 }
