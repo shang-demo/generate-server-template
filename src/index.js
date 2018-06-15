@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import program from 'commander';
 import { stat } from 'fs-extra';
 import { resolve as pathResolve } from 'path';
@@ -6,14 +5,7 @@ import { prompt } from 'inquirer';
 
 import { colorEcho } from './util';
 import { getConfig, setConfig } from './user-data';
-import {
-  ensureTargetDir,
-  cpBase,
-  buildComponents,
-  buildConfigFile,
-  buildIndexJs,
-  buildPackage,
-} from './build';
+import Builder from './Builder';
 
 async function parseArgv() {
   let targetDir;
@@ -21,6 +13,7 @@ async function parseArgv() {
   program
     .version('0.0.1', '-v, --version')
     .arguments('<target>')
+    .option('--setTemplateDir <set template dir>', 'set template dir persistence')
     .option('-t --templateDir <template dir>', 'set template dir')
     .option('-k --koaServer', 'add koa server')
     .option('-c --senecaClient', 'add seneca client')
@@ -32,9 +25,19 @@ async function parseArgv() {
     })
     .parse(process.argv);
 
-  if (program.templateDir) {
+  let {
+    model,
+    koaServer,
+    senecaClient,
+    senecaServer,
+    customerErrors,
+    templateDir,
+    setTemplateDir,
+  } = program;
+
+  if (setTemplateDir) {
     try {
-      let gstConfig = await setConfig({ templateDir: program.templateDir });
+      let gstConfig = await setConfig({ templateDir: setTemplateDir });
       colorEcho(JSON.stringify(gstConfig));
     }
     catch (e) {
@@ -44,19 +47,21 @@ async function parseArgv() {
     process.exit(0);
   }
 
-  let { templateDir } = await getConfig();
+  if (!templateDir) {
+    ({ templateDir } = await getConfig());
+  }
 
   if (!templateDir) {
-    colorEcho('gst -t <template dir> to set template dir');
+    colorEcho(' gst -t <use templateDir> or gst --setTemplateDir <set template dir>');
     process.exit(1);
   }
 
   // must be a type to generate
-  if (!program.koaServer && !program.senecaClient && !program.senecaServer) {
-    program.koaServer = true;
+  if (!koaServer && !senecaClient && !senecaServer) {
+    koaServer = true;
   }
 
-  if (program.koaServer && program.senecaServer) {
+  if (koaServer && senecaServer) {
     colorEcho('koa server or seneca server should be only');
     process.exit(1);
   }
@@ -94,12 +99,13 @@ async function parseArgv() {
   }
 
   let info = {
-    dir: targetDir,
-    model: program.model,
-    koaServer: program.koaServer,
-    senecaClient: program.senecaClient,
-    senecaServer: program.senecaServer,
-    customerErrors: program.customerErrors,
+    targetDir,
+    templateDir,
+    model,
+    koaServer,
+    senecaClient,
+    senecaServer,
+    customerErrors,
   };
 
   let message = '';
@@ -120,25 +126,11 @@ async function parseArgv() {
     process.exit(1);
   }
 
-  return targetDir;
+  return info;
 }
 
 (async () => {
-  let targetDir = await parseArgv();
-
-  let arr = [ensureTargetDir, cpBase, buildComponents, buildConfigFile, buildIndexJs, buildPackage];
-
-  let {
-    model, koaServer, senecaClient, senecaServer, customerErrors,
-  } = program;
-
-  await Promise.each(arr, (fun) => {
-    return fun(targetDir, {
-      model,
-      koaServer,
-      senecaClient,
-      senecaServer,
-      customerErrors,
-    });
-  });
+  let result = await parseArgv();
+  let builder = new Builder(result);
+  await builder.run();
 })();

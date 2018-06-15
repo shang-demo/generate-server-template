@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { stat } from 'fs-extra';
 import { resolve as pathResolve } from 'path';
 
-async function isExists(p) {
+async function checkExists(p) {
   try {
     await stat(p);
     return true;
@@ -18,17 +18,19 @@ function getLockName(str) {
   return hash.digest('hex');
 }
 
-function getLockPath({
+async function getLockPath({
   model, koaServer, senecaClient, senecaServer, customerErrors,
 }) {
   let name = getLockName([model, koaServer, senecaClient, senecaServer, customerErrors].join('|'));
-  console.info('name: ', name);
+  console.info('lock file name: ', name);
 
   let file = pathResolve(__dirname, name);
+  let isExists = await checkExists(file);
 
-  if (isExists(file)) {
+  if (isExists) {
     return file;
   }
+
   return null;
 }
 

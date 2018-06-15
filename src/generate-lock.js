@@ -1,18 +1,12 @@
 import Promise from 'bluebird';
 import { resolve as pathResolve } from 'path';
-import { exec, cp } from 'shelljs';
+import { exec } from 'shelljs';
 import { getLockPath } from './yarn-lock/index';
 
-import {
-  ensureTargetDir,
-  cpBase,
-  buildComponents,
-  buildConfigFile,
-  buildIndexJs,
-  buildPackage,
-} from './build';
+import Builder from './Builder';
 
-const tempDir = pathResolve(__dirname, '../dist');
+const templateDir = process.env.TEMPLATE_DIR;
+console.info('templateDir: ', templateDir);
 
 let options = [
   { koaServer: true },
@@ -26,30 +20,27 @@ let options = [
   // same as {senecaServer: true}
   // { senecaServer: true, model: true },
 ];
-let arr = [ensureTargetDir, cpBase, buildComponents, buildConfigFile, buildIndexJs];
 
-// must be each, because build use same memory
-Promise.each(options, async (option) => {
-  console.info('option: ', option);
-
+Promise.map(options, async (option) => {
+  let tempDir = pathResolve(__dirname, '../dist');
   let targetDir = pathResolve(tempDir, Object.keys(option).join('-'));
-  await exec(`rm -rf ${targetDir}`);
-  try {
-    await Promise.each(arr, (fun) => {
-      return fun(targetDir, option);
-    });
 
-    let lockPath = await getLockPath(option);
-    console.info('lockPath: ', lockPath);
-    if (lockPath) {
-      await exec(`rm -rf ${lockPath}`);
-    }
+  console.info('option: ', option);
+  const builder = new Builder(Object.assign(option, {
+    templateDir,
+    targetDir,
+    disableLock: true,
+  }));
 
-    await buildPackage(targetDir, option);
-    await cp(pathResolve(targetDir, 'yarn.lock'), lockPath);
-  }
-  catch (e) {
-    console.warn(e);
-  }
   await exec(`rm -rf ${targetDir}`);
+  let lockPath = await getLockPath(option);
+  console.info('lockPath: ', lockPath);
+  if (lockPath) {
+    await exec(`rm -rf ${lockPath}`);
+  }
+
+  await builder.run();
+}).catch((e) => {
+  console.warn(e);
+  process.exit(1);
 });
