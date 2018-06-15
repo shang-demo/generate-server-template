@@ -16,6 +16,23 @@ const templateDir = process.env.TEMPLATE_DIR;
 console.info('templateDir: ', templateDir);
 let options = [{
   koaServer: true
+}, {
+  koaServer: true,
+  senecaClient: true
+}, {
+  senecaServer: true
+}, // same as {senecaServer: true}
+// { senecaServer: true, senecaClient: true },
+{
+  koaServer: true,
+  model: true
+}, {
+  koaServer: true,
+  senecaClient: true,
+  model: true
+}, {
+  senecaServer: true,
+  model: true
 }];
 
 _bluebird.default.map(options, async option => {
