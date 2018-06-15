@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 import { merge } from 'lodash';
-import { spawn } from 'child_process';
 import { resolve as pathResolve, parse as pathParse } from 'path';
 import format from 'prettier-eslint';
 import { camelize } from 'humps';
@@ -8,33 +7,7 @@ import { writeFile, readJson, ensureFile, ensureDir, stat } from 'fs-extra';
 import { components, cpDirs } from './constants';
 import { getLockPath } from './yarn-lock/index';
 import { parseName } from './package-info-parser';
-
-function exec(cmd, opt = {}) {
-  console.info(cmd);
-  return new Promise((resolve, reject) => {
-    let child = spawn(
-      cmd,
-      Object.assign(
-        {
-          shell: true,
-          stdio: 'inherit',
-        },
-        opt
-      )
-    );
-
-    child.on('error', (err) => {
-      reject(err);
-    });
-
-    child.on('close', (code) => {
-      if (code === 0) {
-        resolve(code);
-      }
-      reject(code);
-    });
-  });
-}
+import { exec } from './util';
 
 function formatCode(str) {
   const options = {

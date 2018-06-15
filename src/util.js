@@ -1,3 +1,5 @@
+import { spawn } from 'child_process';
+
 function colorEcho(str, fg = 31, bg = 40, style = 1) {
   // FgBlack = "\x1b[30m"
   // FgRed = "\x1b[31m"
@@ -29,5 +31,32 @@ function colorEcho(str, fg = 31, bg = 40, style = 1) {
   console.log(`\x1b[${fg}m\x1b[${bg}m\x1b[${style}m${str}`);
 }
 
-export { colorEcho };
-export default {};
+async function exec(cmd, opt = {}) {
+  console.info(cmd);
+  return new Promise((resolve, reject) => {
+    let child = spawn(
+      cmd,
+      Object.assign(
+        {
+          shell: true,
+          stdio: 'inherit',
+        },
+        opt
+      )
+    );
+
+    child.on('error', (err) => {
+      reject(err);
+    });
+
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve(code);
+      }
+      reject(code);
+    });
+  });
+}
+
+export { colorEcho, exec };
+export default { colorEcho, exec };

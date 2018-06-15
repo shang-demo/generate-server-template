@@ -1,5 +1,5 @@
 import rp from 'request-promise';
-import { exec } from 'shelljs';
+import { exec } from './util';
 
 async function parseNpmName(name) {
   let result = await exec(`yarnpkg info ${name} --json`);
