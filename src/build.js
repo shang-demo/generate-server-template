@@ -8,8 +8,7 @@ import { writeFile, readFile } from 'fs-extra';
 import { components, cpDirs } from './constants';
 import { getLockPath } from './yarn-lock/index';
 import { parseName } from './package-info-parser';
-
-const templateDir = pathResolve(__dirname, '../../server-template');
+import { getConfig } from './user-data';
 
 const indexUseList = [];
 const fileMap = {};
@@ -26,6 +25,7 @@ async function ensureFile(p) {
 }
 
 async function projectCp(targetDir, src, dist = src) {
+  let { templateDir } = await getConfig();
   let srcPath = pathResolve(templateDir, src);
   let distPath = pathResolve(targetDir, dist);
 
@@ -91,6 +91,7 @@ async function createComponent(targetDir, name) {
 
 async function createPackageJson(targetDir) {
   let { name } = pathParse(targetDir);
+  let { templateDir } = await getConfig();
   let pkgStr = await readFile(pathResolve(templateDir, 'package.json'));
   let pkg = JSON.parse(pkgStr);
 

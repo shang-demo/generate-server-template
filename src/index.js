@@ -5,6 +5,7 @@ import { resolve as pathResolve } from 'path';
 import { prompt } from 'inquirer';
 
 import { colorEcho } from './util';
+import { getConfig, setConfig } from './user-data';
 import {
   ensureTargetDir,
   cpBase,
@@ -20,6 +21,7 @@ async function parseArgv() {
   program
     .version('0.0.1', '-v, --version')
     .arguments('<target>')
+    .option('-t --templateDir <template dir>', 'set template dir')
     .option('-k --koaServer', 'add koa server')
     .option('-c --senecaClient', 'add seneca client')
     .option('-s --senecaServer', 'add seneca server')
@@ -29,6 +31,25 @@ async function parseArgv() {
       targetDir = target;
     })
     .parse(process.argv);
+
+  if (program.templateDir) {
+    try {
+      let gstConfig = await setConfig({ templateDir: program.templateDir });
+      colorEcho(JSON.stringify(gstConfig));
+    }
+    catch (e) {
+      colorEcho(e.message);
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
+  let { templateDir } = await getConfig();
+
+  if (!templateDir) {
+    colorEcho('gst -t <template dir> to set template dir');
+    process.exit(1);
+  }
 
   // must be a type to generate
   if (!program.koaServer && !program.senecaClient && !program.senecaServer) {
