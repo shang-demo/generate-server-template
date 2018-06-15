@@ -6,6 +6,7 @@ cache:
     - "node_modules"
   yarn: true
 skip_cleanup: true
+sudo: required
 install: yarn
 script:
   - yarn lint

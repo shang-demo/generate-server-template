@@ -4,8 +4,8 @@ which git
 dir=$(pwd)
 cd ..
 git clone --depth=1 -b v4 --single-branch https://github.com/shang-demo/server-template.git
-echo "{\"templateDir\":\"${dir}/server-template\"}" > /var/local/.generate-server-template.json
-cat /var/local/.generate-server-template.json
+sudo echo "{\"templateDir\":\"${dir}/server-template\"}" > /var/local/.generate-server-template.json
+sudo cat /var/local/.generate-server-template.json
 pwd
 ls -la
 cd ${dir}
