@@ -36,6 +36,7 @@ _bluebird.default.map(options, async option => {
   }
 
   await builder.run();
+  await (0, _util.exec)(`cp ${(0, _path.resolve)(targetDir, 'yarn.lock')} ${lockPath}`);
   await (0, _util.exec)(`rm -rf ${targetDir}`);
 }).catch(e => {
   console.warn(e);
