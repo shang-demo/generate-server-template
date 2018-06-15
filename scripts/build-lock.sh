@@ -10,3 +10,7 @@ cd ${dir}
 ls -la
 node dist/generate-lock.js
 ls -la dist/yarn-lock
+
+cd dist
+npm install
+npm link

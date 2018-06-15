@@ -78,13 +78,27 @@ gulp.task('pkg', async () => {
 
   await writeFile(pathResolve(__dirname, '../dist/package.json'), JSON.stringify(pkg, null, 2));
 
-  let binValue = `
-#!/usr/bin/env node
-require('./index.js');
+  let binValue = `#!/usr/bin/env node
+
+require('../index.js');
 `;
 
   await mkdir(pathResolve(__dirname, '../dist/bin'));
   await writeFile(pathResolve(__dirname, '../dist/bin/generate-server-template'), binValue);
+
+  let gitIgnoreValue = `
+# node_modules
+*node_modules*
+
+npm-debug.log
+
+# user
+.vscode
+.git
+.idea
+dist/
+`;
+  await writeFile(pathResolve(__dirname, '../dist/.gitignore'), gitIgnoreValue);
 });
 
 gulp.task('build:dist', gulp.series('clean', 'lint', 'babel', 'pkg'));
