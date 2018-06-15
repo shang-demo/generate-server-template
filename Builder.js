@@ -149,9 +149,12 @@ class Builder {
 
   async buildPackage() {
     await this.createPackageJson();
-    let lockPath = await (0, _index.getLockPath)(this);
+    let {
+      lockPath,
+      isExists
+    } = await (0, _index.getLockPath)(this);
 
-    if (!this.disableLock && lockPath) {
+    if (!this.disableLock && isExists) {
       await (0, _util.exec)(`cp ${lockPath} ${(0, _path.resolve)(this.targetDir, 'yarn.lock')}`);
     }
 

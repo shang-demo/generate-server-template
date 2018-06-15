@@ -45,10 +45,13 @@ _bluebird.default.map(options, async option => {
     disableLock: true
   }));
   await (0, _util.exec)(`rm -rf ${targetDir}`);
-  let lockPath = await (0, _index.getLockPath)(option);
+  let {
+    lockPath,
+    isExists
+  } = await (0, _index.getLockPath)(option);
   console.info('lockPath: ', lockPath);
 
-  if (lockPath) {
+  if (isExists) {
     await (0, _util.exec)(`rm -rf ${lockPath}`);
   }
 

@@ -42,12 +42,10 @@ async function getLockPath({
   console.info('lock file name: ', name);
   let file = (0, _path.resolve)(__dirname, name);
   let isExists = await checkExists(file);
-
-  if (isExists) {
-    return file;
-  }
-
-  return null;
+  return {
+    lockPath: file,
+    isExists
+  };
 }
 
 var _default = getLockPath;
