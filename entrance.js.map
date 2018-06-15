@@ -1,0 +1,1 @@
+{"version":3,"sources":["entrance.js"],"names":["require"],"mappings":";;AAAAA,QAAQ,iBAAR;;AACAA,QAAQ,SAAR","sourcesContent":["require('@babel/register');\nrequire('./index');\n"],"file":"entrance.js"}
