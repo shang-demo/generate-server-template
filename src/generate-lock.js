@@ -40,6 +40,7 @@ Promise.map(options, async (option) => {
   }
 
   await builder.run();
+  await exec(`cp ${pathResolve(targetDir, 'yarn.lock')} ${lockPath}`);
   await exec(`rm -rf ${targetDir}`);
 }).catch((e) => {
   console.warn(e);
