@@ -32,9 +32,10 @@ var _index = require("./yarn-lock/index");
 
 var _packageInfoParser = require("./package-info-parser");
 
+var _userData = require("./user-data");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const templateDir = (0, _path.resolve)(__dirname, '../../server-template');
 const indexUseList = [];
 const fileMap = {};
 const packageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
@@ -52,6 +53,9 @@ async function ensureFile(p) {
 }
 
 async function projectCp(targetDir, src, dist = src) {
+  let {
+    templateDir
+  } = await (0, _userData.getConfig)();
   let srcPath = (0, _path.resolve)(templateDir, src);
   let distPath = (0, _path.resolve)(targetDir, dist);
   await ensureDir(distPath); // console.info(`cp -r ${srcPath}, ${distPath}`);
@@ -118,6 +122,9 @@ async function createPackageJson(targetDir) {
   let {
     name
   } = (0, _path.parse)(targetDir);
+  let {
+    templateDir
+  } = await (0, _userData.getConfig)();
   let pkgStr = await (0, _fsExtra.readFile)((0, _path.resolve)(templateDir, 'package.json'));
   let pkg = JSON.parse(pkgStr);
   pkg.name = name;

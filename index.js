@@ -12,6 +12,8 @@ var _inquirer = require("inquirer");
 
 var _util = require("./util");
 
+var _userData = require("./user-data");
+
 var _build = require("./build");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19,9 +21,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function parseArgv() {
   let targetDir;
 
-  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('-k --koaServer', 'add koa server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
+  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
     targetDir = target;
-  }).parse(process.argv); // must be a type to generate
+  }).parse(process.argv);
+
+  if (_commander.default.templateDir) {
+    try {
+      let gstConfig = await (0, _userData.setConfig)({
+        templateDir: _commander.default.templateDir
+      });
+      (0, _util.colorEcho)(JSON.stringify(gstConfig));
+    } catch (e) {
+      (0, _util.colorEcho)(e.message);
+      process.exit(1);
+    }
+
+    process.exit(0);
+  }
+
+  let {
+    templateDir
+  } = await (0, _userData.getConfig)();
+
+  if (!templateDir) {
+    (0, _util.colorEcho)('gst -t <template dir> to set template dir');
+    process.exit(1);
+  } // must be a type to generate
 
 
   if (!_commander.default.koaServer && !_commander.default.senecaClient && !_commander.default.senecaServer) {
