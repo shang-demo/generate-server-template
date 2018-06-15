@@ -4,7 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.colorEcho = colorEcho;
+exports.exec = exec;
 exports.default = void 0;
+
+var _child_process = require("child_process");
 
 function colorEcho(str, fg = 31, bg = 40, style = 1) {
   // FgBlack = "\x1b[30m"
@@ -34,6 +37,29 @@ function colorEcho(str, fg = 31, bg = 40, style = 1) {
   console.log(`\x1b[${fg}m\x1b[${bg}m\x1b[${style}m${str}`);
 }
 
-var _default = {};
+async function exec(cmd, opt = {}) {
+  console.info(cmd);
+  return new Promise((resolve, reject) => {
+    let child = (0, _child_process.spawn)(cmd, Object.assign({
+      shell: true,
+      stdio: 'inherit'
+    }, opt));
+    child.on('error', err => {
+      reject(err);
+    });
+    child.on('close', code => {
+      if (code === 0) {
+        resolve(code);
+      }
+
+      reject(code);
+    });
+  });
+}
+
+var _default = {
+  colorEcho,
+  exec
+};
 exports.default = _default;
 //# sourceMappingURL=util.js.map

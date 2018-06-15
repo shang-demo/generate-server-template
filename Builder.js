@@ -9,8 +9,6 @@ var _bluebird = _interopRequireDefault(require("bluebird"));
 
 var _lodash = require("lodash");
 
-var _child_process = require("child_process");
-
 var _path = require("path");
 
 var _prettierEslint = _interopRequireDefault(require("prettier-eslint"));
@@ -25,27 +23,9 @@ var _index = require("./yarn-lock/index");
 
 var _packageInfoParser = require("./package-info-parser");
 
+var _util = require("./util");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function exec(cmd, opt = {}) {
-  console.info(cmd);
-  return new _bluebird.default((resolve, reject) => {
-    let child = (0, _child_process.spawn)(cmd, Object.assign({
-      shell: true,
-      stdio: 'inherit'
-    }, opt));
-    child.on('error', err => {
-      reject(err);
-    });
-    child.on('close', code => {
-      if (code === 0) {
-        resolve(code);
-      }
-
-      reject(code);
-    });
-  });
-}
 
 function formatCode(str) {
   const options = {
@@ -104,10 +84,10 @@ class Builder {
         dir
       } = await (0, _path.parse)(distPath);
       await (0, _fsExtra.ensureDir)(dir);
-      await exec(`cp -r ${srcPath} ${distPath}`);
+      await (0, _util.exec)(`cp -r ${srcPath} ${distPath}`);
     } else if (stats.isFile()) {
       await (0, _fsExtra.ensureFile)(distPath);
-      await exec(`cp ${srcPath} ${distPath}`);
+      await (0, _util.exec)(`cp ${srcPath} ${distPath}`);
     }
 
     return null;
@@ -172,12 +152,12 @@ class Builder {
     let lockPath = await (0, _index.getLockPath)(this);
 
     if (!this.disableLock && lockPath) {
-      await exec(`cp ${lockPath} ${(0, _path.resolve)(this.targetDir, 'yarn.lock')}`);
+      await (0, _util.exec)(`cp ${lockPath} ${(0, _path.resolve)(this.targetDir, 'yarn.lock')}`);
     }
 
     let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
     console.log(cmd);
-    await exec(cmd);
+    await (0, _util.exec)(cmd);
   }
 
   async cpBase() {

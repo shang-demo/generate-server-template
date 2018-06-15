@@ -10,12 +10,12 @@ exports.default = void 0;
 
 var _requestPromise = _interopRequireDefault(require("request-promise"));
 
-var _shelljs = require("shelljs");
+var _util = require("./util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 async function parseNpmName(name) {
-  let result = await (0, _shelljs.exec)(`yarnpkg info ${name} --json`);
+  let result = await (0, _util.exec)(`yarnpkg info ${name} --json`);
   let info = JSON.parse(result);
 
   if (info.error) {
