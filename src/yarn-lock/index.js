@@ -27,11 +27,10 @@ async function getLockPath({
   let file = pathResolve(__dirname, name);
   let isExists = await checkExists(file);
 
-  if (isExists) {
-    return file;
-  }
-
-  return null;
+  return {
+    lockPath: file,
+    isExists,
+  };
 }
 
 export { getLockName, getLockPath };

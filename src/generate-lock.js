@@ -33,9 +33,9 @@ Promise.map(options, async (option) => {
   }));
 
   await exec(`rm -rf ${targetDir}`);
-  let lockPath = await getLockPath(option);
+  let { lockPath, isExists } = await getLockPath(option);
   console.info('lockPath: ', lockPath);
-  if (lockPath) {
+  if (isExists) {
     await exec(`rm -rf ${lockPath}`);
   }
 
