@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 
+const { spawn } = require('child_process');
 const gulp = require('gulp');
 const pkg = require('../package.json');
 const { promisify } = require('util');
@@ -9,6 +10,33 @@ const { resolve: pathResolve } = require('path');
 
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
+
+async function exec(cmd, opt = {}) {
+  console.info(cmd);
+  return new Promise((resolve, reject) => {
+    let child = spawn(
+      cmd,
+      Object.assign(
+        {
+          shell: true,
+          stdio: 'inherit',
+        },
+        opt
+      )
+    );
+
+    child.on('error', (err) => {
+      reject(err);
+    });
+
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve(code);
+      }
+      reject(code);
+    });
+  });
+}
 
 let $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'del', 'streamqueue'],
@@ -73,7 +101,7 @@ gulp.task('pkg', async () => {
   pkg.devDependencies = {};
   pkg.scripts = {};
   pkg.bin = {
-    stg: './bin/generate-server-template',
+    gs: './bin/generate-server-template',
   };
 
   await writeFile(pathResolve(__dirname, '../dist/package.json'), JSON.stringify(pkg, null, 2));
@@ -84,7 +112,9 @@ require('../index.js');
 `;
 
   await mkdir(pathResolve(__dirname, '../dist/bin'));
-  await writeFile(pathResolve(__dirname, '../dist/bin/generate-server-template'), binValue);
+  let binPath = pathResolve(__dirname, '../dist/bin/generate-server-template');
+  await writeFile(binPath, binValue);
+  await exec(`chmod +x ${binPath}`);
 
   let gitIgnoreValue = `
 # node_modules
