@@ -12,13 +12,11 @@ let options = [
   { koaServer: true },
   { koaServer: true, senecaClient: true },
   { senecaServer: true },
-  // same as {senecaServer: true}
-  // { senecaServer: true, senecaClient: true },
+  { senecaServer: true, senecaClient: true },
   { koaServer: true, model: true },
   { koaServer: true, senecaClient: true, model: true },
   { senecaServer: true, model: true },
-  // same as {senecaServer: true}
-  // { senecaServer: true, model: true },
+  { senecaServer: true, senecaClient: true, model: true },
 ];
 
 Promise.map(options, async (option) => {
