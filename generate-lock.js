@@ -21,9 +21,10 @@ let options = [{
   senecaClient: true
 }, {
   senecaServer: true
-}, // same as {senecaServer: true}
-// { senecaServer: true, senecaClient: true },
-{
+}, {
+  senecaServer: true,
+  senecaClient: true
+}, {
   koaServer: true,
   model: true
 }, {
@@ -32,6 +33,10 @@ let options = [{
   model: true
 }, {
   senecaServer: true,
+  model: true
+}, {
+  senecaServer: true,
+  senecaClient: true,
   model: true
 }];
 
