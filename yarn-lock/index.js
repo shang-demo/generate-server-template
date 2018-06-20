@@ -39,7 +39,6 @@ async function getLockPath({
   customerErrors
 }) {
   let name = getLockName([model, koaServer, senecaClient, senecaServer, customerErrors].join('|'));
-  console.info('lock file name: ', name);
   let file = (0, _path.resolve)(__dirname, name);
   let isExists = await checkExists(file);
   return {

@@ -54,13 +54,13 @@ _bluebird.default.map(options, async option => {
     lockPath,
     isExists
   } = await (0, _index.getLockPath)(option);
-  console.info('lockPath: ', lockPath);
 
   if (isExists) {
     await (0, _util.exec)(`rm -rf ${lockPath}`);
   }
 
   await builder.run();
+  console.info(`${targetDir} build success`);
   await (0, _util.exec)(`cp ${(0, _path.resolve)(targetDir, 'yarn.lock')} ${lockPath}`);
   await (0, _util.exec)(`rm -rf ${targetDir}`);
 }).catch(e => {

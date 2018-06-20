@@ -159,7 +159,6 @@ class Builder {
     }
 
     let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
-    console.log(cmd);
     await (0, _util.exec)(cmd);
   }
 
