@@ -32,12 +32,12 @@ Promise.map(options, async (option) => {
 
   await exec(`rm -rf ${targetDir}`);
   let { lockPath, isExists } = await getLockPath(option);
-  console.info('lockPath: ', lockPath);
   if (isExists) {
     await exec(`rm -rf ${lockPath}`);
   }
 
   await builder.run();
+  console.info(`${targetDir} build success`);
   await exec(`cp ${pathResolve(targetDir, 'yarn.lock')} ${lockPath}`);
   await exec(`rm -rf ${targetDir}`);
 }).catch((e) => {
