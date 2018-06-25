@@ -123,9 +123,7 @@ const components = {
   ],
   senecaRoute: [
     {
-      use: 'ofa2-seneca-wrap',
-      alias: '{ wrapRoutes }',
-      useName: 'wrapRoutes',
+      use: 'ofa2-seneca-wrap-route',
     },
     {
       use: 'ofa2-seneca-route',
@@ -139,9 +137,7 @@ const components = {
   ],
   senecaWrapAct: [
     {
-      use: 'ofa2-seneca-wrap',
-      alias: '{ wrapAct }',
-      useName: 'wrapAct',
+      use: 'ofa2-seneca-wrap-act',
     },
   ],
   senecaServer: [
