@@ -40,7 +40,7 @@ let options = [{
   model: true
 }];
 
-_bluebird.default.map(options, async option => {
+_bluebird.default.mapSeries(options, async option => {
   let tempDir = (0, _path.resolve)(templateDir, '../');
   let targetDir = (0, _path.resolve)(tempDir, Object.keys(option).join('-'));
   console.info('option: ', option);
