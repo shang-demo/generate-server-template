@@ -19,13 +19,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function parseArgv() {
   let targetDir;
 
-  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
+  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-i --socketIO', 'add socket io server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
     targetDir = target;
   }).parse(process.argv);
 
   let {
     model,
     koaServer,
+    socketIO,
     senecaClient,
     senecaServer,
     customerErrors,
@@ -35,10 +36,10 @@ async function parseArgv() {
 
   if (setTemplateDir) {
     try {
-      let gstConfig = await (0, _userData.setConfig)({
+      let gsConfig = await (0, _userData.setConfig)({
         templateDir: setTemplateDir
       });
-      (0, _util.colorEcho)(JSON.stringify(gstConfig));
+      (0, _util.colorEcho)(JSON.stringify(gsConfig));
     } catch (e) {
       (0, _util.colorEcho)(e.message);
       process.exit(1);
@@ -54,13 +55,19 @@ async function parseArgv() {
   }
 
   if (!templateDir) {
-    (0, _util.colorEcho)(' gst -t <use templateDir> or gst --setTemplateDir <set template dir>');
+    (0, _util.colorEcho)(' gs -t <use templateDir> or gs --setTemplateDir <set template dir>');
     process.exit(1);
   } // must be a type to generate
 
 
   if (!koaServer && !senecaClient && !senecaServer) {
     koaServer = true;
+  } // socketIO must with koaServer
+
+
+  if (socketIO && !koaServer) {
+    (0, _util.colorEcho)('socketIo need koaServer; `gs -ki`');
+    process.exit(1);
   }
 
   if (koaServer && senecaServer) {
@@ -106,6 +113,7 @@ async function parseArgv() {
     templateDir,
     model,
     koaServer,
+    socketIO,
     senecaClient,
     senecaServer,
     customerErrors

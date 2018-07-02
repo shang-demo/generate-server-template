@@ -84,7 +84,7 @@ const components = {
   koaServer: [{
     use: 'ofa2-koa-server'
   }],
-  socketIo: [{
+  socketIO: [{
     use: 'ofa2-socket-io'
   }, {
     src: 'src/config/env/development.js',
