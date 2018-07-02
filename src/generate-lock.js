@@ -19,7 +19,7 @@ let options = [
   { senecaServer: true, senecaClient: true, model: true },
 ];
 
-Promise.map(options, async (option) => {
+Promise.mapSeries(options, async (option) => {
   let tempDir = pathResolve(templateDir, '../');
   let targetDir = pathResolve(tempDir, Object.keys(option).join('-'));
 
