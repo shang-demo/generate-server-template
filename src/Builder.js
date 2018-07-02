@@ -22,6 +22,7 @@ class Builder {
   constructor({
     model,
     koaServer,
+    socketIO,
     senecaClient,
     senecaServer,
     customerErrors,
@@ -32,6 +33,7 @@ class Builder {
     Object.assign(this, {
       model,
       koaServer,
+      socketIO,
       senecaClient,
       senecaServer,
       customerErrors,
@@ -178,6 +180,10 @@ class Builder {
 
     if (this.koaServer) {
       requiredComponents.push(...['koa', 'koaController', 'koaPolicy', 'koaRoute', 'koaServer']);
+    }
+
+    if (this.socketIO) {
+      requiredComponents.push(...['socketIO']);
     }
 
     if (this.senecaClient) {

@@ -104,7 +104,7 @@ const components = {
       use: 'ofa2-koa-server',
     },
   ],
-  socketIo: [
+  socketIO: [
     {
       use: 'ofa2-socket-io',
     },
