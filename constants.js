@@ -84,6 +84,22 @@ const components = {
   koaServer: [{
     use: 'ofa2-koa-server'
   }],
+  socketIo: [{
+    use: 'ofa2-socket-io'
+  }, {
+    src: 'src/config/env/development.js',
+    value: {
+      socket: {
+        headerKeys: [{
+          key: 'userId',
+          header: undefined,
+          required: false
+        }],
+        autoJoinRoom: true,
+        propGet: true
+      }
+    }
+  }],
   seneca: [{
     use: 'ofa2-seneca'
   }],
