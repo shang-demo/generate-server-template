@@ -21,6 +21,7 @@ async function parseArgv() {
     .option('-s --senecaServer', 'add seneca server')
     .option('-m --model', 'add model')
     .option('-e --customerErrors <error-package>', 'add customer errors package')
+    .option('--yj <cloudnapps-template-dir>', 'build for cloudnapps')
     .action((target) => {
       targetDir = target;
     })
@@ -35,6 +36,7 @@ async function parseArgv() {
     customerErrors,
     templateDir,
     setTemplateDir,
+    yj,
   } = program;
 
   if (setTemplateDir) {
@@ -115,6 +117,7 @@ async function parseArgv() {
     senecaClient,
     senecaServer,
     customerErrors,
+    yj,
   };
 
   let message = '';

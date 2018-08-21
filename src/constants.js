@@ -258,5 +258,19 @@ const cpDirs = [
   'Makefile',
 ];
 
-export { components, cpDirs };
+const yjDelDirs = [
+  'config/Dockerfiles',
+  'config/script-tools',
+  'config/remote.config.json',
+  'Makefile'
+];
+const yjCpDirs = [
+  '.gitignore',
+  'client',
+  'devops',
+  'devops.sh',
+  'prepare.sh',
+];
+
+export { components, cpDirs, yjDelDirs, yjCpDirs };
 export default {};

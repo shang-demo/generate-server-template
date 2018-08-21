@@ -4,7 +4,7 @@ import { resolve as pathResolve, parse as pathParse } from 'path';
 import format from 'prettier-eslint';
 import { camelize } from 'humps';
 import { writeFile, readJson, ensureFile, ensureDir, stat } from 'fs-extra';
-import { components, cpDirs } from './constants';
+import { components, cpDirs, yjDelDirs, yjCpDirs } from './constants';
 import { getLockPath } from './yarn-lock/index';
 import { parseName } from './package-info-parser';
 import { exec } from './util';
@@ -28,6 +28,7 @@ class Builder {
     customerErrors,
     templateDir,
     targetDir,
+    yj,
     disableLock = false,
   }) {
     Object.assign(this, {
@@ -39,6 +40,7 @@ class Builder {
       customerErrors,
       templateDir,
       targetDir,
+      yj,
       disableLock,
     });
 
@@ -268,6 +270,25 @@ class Builder {
     await writeFile(pathResolve(this.targetDir, 'src/index.js'), formatCode(str));
   }
 
+  async buildYJ() {
+    if (!this.yj) {
+      return null;
+    }
+
+    await Promise.all(yjDelDirs.map((dir) => {
+      return exec(`cd ${this.targetDir} && rm -rf ${dir}`);
+    }));
+
+    await exec(`cd ${this.targetDir} && mkdir -p server && ls -A | grep -v server | xargs -I {} mv {} server`);
+
+    await Promise.all(yjCpDirs.map((dir) => {
+      let cpPath = pathResolve(this.yj, dir);
+      return exec(`cp -rf ${cpPath} ${this.targetDir}`);
+    }));
+
+    return null;
+  }
+
   async run() {
     await this.ensureTargetDir();
     await this.cpBase();
@@ -275,6 +296,7 @@ class Builder {
     await this.buildConfigFile();
     await this.buildIndexJs();
     await this.buildPackage();
+    await this.buildYJ();
   }
 }
 
