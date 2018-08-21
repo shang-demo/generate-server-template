@@ -19,7 +19,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function parseArgv() {
   let targetDir;
 
-  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-i --socketIO', 'add socket io server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').action(target => {
+  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-i --socketIO', 'add socket io server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').option('--yj <cloudnapps-template-dir>', 'build for cloudnapps').action(target => {
     targetDir = target;
   }).parse(process.argv);
 
@@ -31,7 +31,8 @@ async function parseArgv() {
     senecaServer,
     customerErrors,
     templateDir,
-    setTemplateDir
+    setTemplateDir,
+    yj
   } = _commander.default;
 
   if (setTemplateDir) {
@@ -116,7 +117,8 @@ async function parseArgv() {
     socketIO,
     senecaClient,
     senecaServer,
-    customerErrors
+    customerErrors,
+    yj
   };
   let message = '';
   Object.keys(info).forEach(key => {

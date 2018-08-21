@@ -45,6 +45,7 @@ class Builder {
     customerErrors,
     templateDir,
     targetDir,
+    yj,
     disableLock = false
   }) {
     Object.assign(this, {
@@ -56,6 +57,7 @@ class Builder {
       customerErrors,
       templateDir,
       targetDir,
+      yj,
       disableLock
     });
     this.packageRequired = [];
@@ -282,6 +284,22 @@ class Builder {
     await (0, _fsExtra.writeFile)((0, _path.resolve)(this.targetDir, 'src/index.js'), formatCode(str));
   }
 
+  async buildYJ() {
+    if (!this.yj) {
+      return null;
+    }
+
+    await _bluebird.default.all(_constants.yjDelDirs.map(dir => {
+      return (0, _util.exec)(`cd ${this.targetDir} && rm -rf ${dir}`);
+    }));
+    await (0, _util.exec)(`cd ${this.targetDir} && mkdir -p server && ls -A | grep -v server | xargs -I {} mv {} server`);
+    await _bluebird.default.all(_constants.yjCpDirs.map(dir => {
+      let cpPath = (0, _path.resolve)(this.yj, dir);
+      return (0, _util.exec)(`cp -rf ${cpPath} ${this.targetDir}`);
+    }));
+    return null;
+  }
+
   async run() {
     await this.ensureTargetDir();
     await this.cpBase();
@@ -289,6 +307,7 @@ class Builder {
     await this.buildConfigFile();
     await this.buildIndexJs();
     await this.buildPackage();
+    await this.buildYJ();
   }
 
 }

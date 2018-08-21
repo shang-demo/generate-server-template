@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.cpDirs = exports.components = void 0;
+exports.default = exports.yjCpDirs = exports.yjDelDirs = exports.cpDirs = exports.components = void 0;
 const components = {
   error: [{
     src: 'src/config/error.js',
@@ -197,6 +197,10 @@ const components = {
 exports.components = components;
 const cpDirs = ['config', 'src/config/error.js', 'src/config/global.js', 'src/config/http.js', '.babelrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
 exports.cpDirs = cpDirs;
+const yjDelDirs = ['config/Dockerfiles', 'config/script-tools', 'config/remote.config.json', 'Makefile'];
+exports.yjDelDirs = yjDelDirs;
+const yjCpDirs = ['.gitignore', 'client', 'devops', 'devops.sh', 'prepare.sh'];
+exports.yjCpDirs = yjCpDirs;
 var _default = {};
 exports.default = _default;
 //# sourceMappingURL=constants.js.map
