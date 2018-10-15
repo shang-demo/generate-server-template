@@ -22,6 +22,7 @@ async function parseArgv() {
     .option('-m --model', 'add model')
     .option('-e --customerErrors <error-package>', 'add customer errors package')
     .option('--yj <cloudnapps-template-dir>', 'build for cloudnapps')
+    .option('--si', 'skip yarn install')
     .action((target) => {
       targetDir = target;
     })
@@ -37,6 +38,7 @@ async function parseArgv() {
     templateDir,
     setTemplateDir,
     yj,
+    si,
   } = program;
 
   if (setTemplateDir) {
@@ -118,6 +120,7 @@ async function parseArgv() {
     senecaServer,
     customerErrors,
     yj,
+    skipInstall: si,
   };
 
   let message = '';

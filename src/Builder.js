@@ -4,10 +4,12 @@ import { resolve as pathResolve, parse as pathParse } from 'path';
 import format from 'prettier-eslint';
 import { camelize } from 'humps';
 import { writeFile, readJson, ensureFile, ensureDir, stat } from 'fs-extra';
-import { components, cpDirs, yjDelDirs, yjCpDirs } from './constants';
+import { components, cpDirs, yjDelDirs, yjCpDirs, packageRequired } from './constants';
 import { getLockPath } from './yarn-lock/index';
 import { parseName } from './package-info-parser';
 import { exec } from './util';
+
+const type = 'ts';
 
 function formatCode(str) {
   const options = {
@@ -30,6 +32,7 @@ class Builder {
     targetDir,
     yj,
     disableLock = false,
+    skipInstall = false,
   }) {
     Object.assign(this, {
       model,
@@ -42,12 +45,13 @@ class Builder {
       targetDir,
       yj,
       disableLock,
+      skipInstall,
     });
 
     this.packageRequired = [];
     this.indexUseList = [];
     this.fileMap = {};
-    this.packageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
+    this.packageRequired = packageRequired;
   }
 
   appendPackageRequired(name) {
@@ -140,7 +144,12 @@ class Builder {
     }
 
     let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
+
+    if (this.skipInstall) {
+      return cmd.replace(/.*?&& yarnpkg add/, 'yarnpkg add');
+    }
     await exec(cmd);
+    return null;
   }
 
   async cpBase() {
@@ -160,7 +169,7 @@ class Builder {
       let packageName = await parseName(this.customerErrors);
       components.error = [
         {
-          src: 'src/config/error.js',
+          src: `src/config/error.${type}`,
           value: `
     import buildError from '@ofa2/ofa2-error';
     import errors from '${packageName}';
@@ -267,7 +276,7 @@ class Builder {
   .lift();
   `;
 
-    await writeFile(pathResolve(this.targetDir, 'src/index.js'), formatCode(str));
+    await writeFile(pathResolve(this.targetDir, `src/index.${type}`), formatCode(str));
   }
 
   async buildYJ() {
@@ -295,8 +304,13 @@ class Builder {
     await this.buildComponents();
     await this.buildConfigFile();
     await this.buildIndexJs();
-    await this.buildPackage();
+    let echoText = await this.buildPackage();
     await this.buildYJ();
+
+    if (echoText) {
+      console.info('====== you need run next cmd =======');
+      console.info(echoText);
+    }
   }
 }
 
