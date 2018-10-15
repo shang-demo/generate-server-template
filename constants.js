@@ -3,10 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.yjCpDirs = exports.yjDelDirs = exports.cpDirs = exports.components = void 0;
+exports.default = exports.packageRequired = exports.yjCpDirs = exports.yjDelDirs = exports.cpDirs = exports.components = void 0;
+const type = 'ts';
+const jsPackageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
+const tsPackageRequired = ['@babel/runtime', 'bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
+const packageRequired = type === 'ts' ? tsPackageRequired : jsPackageRequired;
+exports.packageRequired = packageRequired;
 const components = {
   error: [{
-    src: 'src/config/error.js',
+    src: `src/config/error.${type}`,
     value: `
   import buildError from '@ofa2/ofa2-error';
   
@@ -25,7 +30,7 @@ const components = {
     use: 'ofa2-logger',
     alias: 'log'
   }, {
-    src: 'src/config/env/development.js',
+    src: `src/config/env/development.${type}`,
     value: {
       log: {
         level: 'trace',
@@ -36,11 +41,11 @@ const components = {
   model: [{
     use: 'ofa2-model'
   }, {
-    cp: 'src/config/models.js'
+    cp: `src/config/models.${type}`
   }, {
     cp: 'src/models'
   }, {
-    src: 'src/config/env/development.js',
+    src: `src/config/env/development.${type}`,
     value: {
       connections: {
         mongo: {
@@ -67,7 +72,7 @@ const components = {
   koaPolicy: [{
     use: 'ofa2-koa-policy'
   }, {
-    cp: 'src/config/policies.js'
+    cp: `src/config/policies.${type}`
   }, {
     cp: 'src/policies'
   }, {
@@ -77,8 +82,8 @@ const components = {
     use: 'ofa2-koa-route'
   }, {
     cp: {
-      src: 'src/config/routes-koa.js',
-      dist: 'src/config/routes.js'
+      src: `src/config/routes-koa.${type}`,
+      dist: `src/config/routes.${type}`
     }
   }],
   koaServer: [{
@@ -87,7 +92,7 @@ const components = {
   socketIO: [{
     use: 'ofa2-socket-io'
   }, {
-    src: 'src/config/env/development.js',
+    src: `src/config/env/development.${type}`,
     value: {
       socket: {
         headerKeys: [{
@@ -117,15 +122,15 @@ const components = {
     use: 'ofa2-seneca-route'
   }, {
     cp: {
-      src: 'src/config/routes-seneca.js',
-      dist: 'src/config/routes.js'
+      src: `src/config/routes-seneca.${type}`,
+      dist: `src/config/routes.${type}`
     }
   }],
   senecaWrapAct: [{
     use: 'ofa2-seneca-wrap-act'
   }],
   senecaServer: [{
-    src: 'src/config/seneca.js',
+    src: `src/config/seneca.${type}`,
     value: {
       connection: 'rabbitmq',
       options: {
@@ -137,7 +142,7 @@ const components = {
   }, {
     package: 'ofa2-seneca-amqp-transport'
   }, {
-    src: 'src/config/env/development.js',
+    src: `src/config/env/development.${type}`,
     value: {
       connections: {
         rabbitmq: {
@@ -159,7 +164,7 @@ const components = {
   senecaClient: [{
     use: 'ofa2-seneca-client'
   }, {
-    src: 'src/config/seneca.js',
+    src: `src/config/seneca.${type}`,
     value: {
       options: {
         timeout: 600000
@@ -171,7 +176,7 @@ const components = {
   }, {
     package: '@ofa2/ofa2-seneca-amqp-transport'
   }, {
-    src: 'src/config/env/development.js',
+    src: `src/config/env/development.${type}`,
     value: {
       connections: {
         senecaClient: {
@@ -195,7 +200,7 @@ const components = {
   }]
 };
 exports.components = components;
-const cpDirs = ['config', 'src/config/error.js', 'src/config/global.js', 'src/config/http.js', '.babelrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
+const cpDirs = ['config', `src/config/error.${type}`, `src/config/global.${type}`, `src/config/http.${type}`, 'src/types', 'tsconfig.json', '.eslintignore', '.nvmrc', '.babelrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
 exports.cpDirs = cpDirs;
 const yjDelDirs = ['config/Dockerfiles', 'config/script-tools', 'config/remote.config.json', 'Makefile'];
 exports.yjDelDirs = yjDelDirs;

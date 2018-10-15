@@ -19,7 +19,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function parseArgv() {
   let targetDir;
 
-  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-i --socketIO', 'add socket io server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').option('--yj <cloudnapps-template-dir>', 'build for cloudnapps').action(target => {
+  _commander.default.version('0.0.1', '-v, --version').arguments('<target>').option('--setTemplateDir <set template dir>', 'set template dir persistence').option('-t --templateDir <template dir>', 'set template dir').option('-k --koaServer', 'add koa server').option('-i --socketIO', 'add socket io server').option('-c --senecaClient', 'add seneca client').option('-s --senecaServer', 'add seneca server').option('-m --model', 'add model').option('-e --customerErrors <error-package>', 'add customer errors package').option('--yj <cloudnapps-template-dir>', 'build for cloudnapps').option('--si', 'skip yarn install').action(target => {
     targetDir = target;
   }).parse(process.argv);
 
@@ -32,7 +32,8 @@ async function parseArgv() {
     customerErrors,
     templateDir,
     setTemplateDir,
-    yj
+    yj,
+    si
   } = _commander.default;
 
   if (setTemplateDir) {
@@ -118,7 +119,8 @@ async function parseArgv() {
     senecaClient,
     senecaServer,
     customerErrors,
-    yj
+    yj,
+    skipInstall: si
   };
   let message = '';
   Object.keys(info).forEach(key => {

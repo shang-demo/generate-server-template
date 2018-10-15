@@ -27,6 +27,8 @@ var _util = require("./util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const type = 'ts';
+
 function formatCode(str) {
   const options = {
     text: str,
@@ -46,7 +48,8 @@ class Builder {
     templateDir,
     targetDir,
     yj,
-    disableLock = false
+    disableLock = false,
+    skipInstall = false
   }) {
     Object.assign(this, {
       model,
@@ -58,12 +61,13 @@ class Builder {
       templateDir,
       targetDir,
       yj,
-      disableLock
+      disableLock,
+      skipInstall
     });
     this.packageRequired = [];
     this.indexUseList = [];
     this.fileMap = {};
-    this.packageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
+    this.packageRequired = _constants.packageRequired;
   }
 
   appendPackageRequired(name) {
@@ -163,7 +167,13 @@ class Builder {
     }
 
     let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
+
+    if (this.skipInstall) {
+      return cmd.replace(/.*?&& yarnpkg add/, 'yarnpkg add');
+    }
+
     await (0, _util.exec)(cmd);
+    return null;
   }
 
   async cpBase() {
@@ -182,7 +192,7 @@ class Builder {
     if (this.customerErrors) {
       let packageName = await (0, _packageInfoParser.parseName)(this.customerErrors);
       _constants.components.error = [{
-        src: 'src/config/error.js',
+        src: `src/config/error.${type}`,
         value: `
     import buildError from '@ofa2/ofa2-error';
     import errors from '${packageName}';
@@ -281,7 +291,7 @@ class Builder {
   })
   .lift();
   `;
-    await (0, _fsExtra.writeFile)((0, _path.resolve)(this.targetDir, 'src/index.js'), formatCode(str));
+    await (0, _fsExtra.writeFile)((0, _path.resolve)(this.targetDir, `src/index.${type}`), formatCode(str));
   }
 
   async buildYJ() {
@@ -306,8 +316,13 @@ class Builder {
     await this.buildComponents();
     await this.buildConfigFile();
     await this.buildIndexJs();
-    await this.buildPackage();
+    let echoText = await this.buildPackage();
     await this.buildYJ();
+
+    if (echoText) {
+      console.info('====== you need run next cmd =======');
+      console.info(echoText);
+    }
   }
 
 }
