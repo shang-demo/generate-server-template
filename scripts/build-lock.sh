@@ -3,7 +3,7 @@ which node
 which git
 dir=$(pwd)
 cd ..
-git clone --depth=1 -b v4 --single-branch https://github.com/shang-demo/server-template.git
+git clone --depth=1 -b v5 --single-branch https://github.com/shang-demo/server-template.git
 templateDir=$(pwd)/server-template
 ls -la
 cd ${dir}
