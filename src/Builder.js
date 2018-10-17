@@ -173,7 +173,10 @@ class Builder {
           value: `
     import buildError from '@ofa2/ofa2-error';
     import errors from '${packageName}';
-    
+
+    errors.UnknownError = 'unknown error, need feedback';
+    errors.ParamsRequired = 'params required';
+
     global.Errors = buildError(errors);
     `,
         },
