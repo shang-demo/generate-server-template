@@ -71,6 +71,9 @@ const components = {
         },
       },
     },
+    {
+      package: '@types/mongoose',
+    },
   ],
   koa: [
     {
@@ -188,7 +191,7 @@ const components = {
       },
     },
     {
-      package: 'ofa2-seneca-amqp-transport',
+      package: '@ofa2/ofa2-seneca-amqp-transport',
     },
     {
       src: `src/config/env/development.${type}`,
