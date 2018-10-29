@@ -132,6 +132,11 @@ class Builder {
     pkg.name = name;
     pkg.dependencies = {};
 
+    if (this.yj) {
+      delete pkg.devDependencies['@s4p/eslint-config'];
+      pkg.devDependencies['@ofa2/eslint-config-ofa2'] = '^1.0.0';
+    }
+
     let p = pathResolve(this.targetDir, 'package.json');
     await writeFile(p, JSON.stringify(pkg, null, 2));
   }
