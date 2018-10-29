@@ -151,6 +151,12 @@ class Builder {
     let pkg = await (0, _fsExtra.readJson)((0, _path.resolve)(this.templateDir, 'package.json'));
     pkg.name = name;
     pkg.dependencies = {};
+
+    if (this.yj) {
+      delete pkg.devDependencies['@s4p/eslint-config'];
+      pkg.devDependencies['@ofa2/eslint-config-ofa2'] = '^1.0.0';
+    }
+
     let p = (0, _path.resolve)(this.targetDir, 'package.json');
     await (0, _fsExtra.writeFile)(p, JSON.stringify(pkg, null, 2));
   }
