@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = exports.packageRequired = exports.yjCpDirs = exports.yjDelDirs = exports.cpDirs = exports.components = void 0;
 const type = 'ts';
 const jsPackageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
-const tsPackageRequired = ['@babel/runtime', 'bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
+const tsPackageRequired = ['tslib', 'bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
 const packageRequired = type === 'ts' ? tsPackageRequired : jsPackageRequired;
 exports.packageRequired = packageRequired;
 const components = {
@@ -202,7 +202,7 @@ const components = {
   }]
 };
 exports.components = components;
-const cpDirs = ['config', `src/config/error.${type}`, `src/config/global.${type}`, `src/config/http.${type}`, 'src/types', 'tsconfig.json', '.eslintignore', '.nvmrc', '.babelrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
+const cpDirs = ['config', `src/config/error.${type}`, `src/config/global.${type}`, `src/config/http.${type}`, 'src/types', 'tsconfig.json', '.eslintignore', '.nvmrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
 exports.cpDirs = cpDirs;
 const yjDelDirs = ['config/Dockerfiles', 'config/script-tools', 'config/remote.config.json', 'Makefile'];
 exports.yjDelDirs = yjDelDirs;
