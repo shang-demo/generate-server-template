@@ -3,7 +3,7 @@ const type = 'ts';
 const jsPackageRequired = ['bluebird', 'lodash', '@ofa2/ofa2', '@ofa2/ofa2-error'];
 
 const tsPackageRequired = [
-  '@babel/runtime',
+  'tslib',
   'bluebird',
   'lodash',
   '@ofa2/ofa2',
@@ -272,7 +272,6 @@ const cpDirs = [
   'tsconfig.json',
   '.eslintignore',
   '.nvmrc',
-  '.babelrc',
   '.eslintrc.js',
   '.gitignore',
   'gulpfile.js',
