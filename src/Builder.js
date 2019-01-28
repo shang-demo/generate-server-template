@@ -282,6 +282,8 @@ class Builder {
     process.exit(1);
   })
   .lift();
+
+  export { app };
   `;
 
     await writeFile(pathResolve(this.targetDir, `src/index.${type}`), formatCode(str));

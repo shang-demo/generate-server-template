@@ -276,6 +276,7 @@ const cpDirs = [
   '.gitignore',
   'gulpfile.js',
   'Makefile',
+  'index.ts',
 ];
 
 const yjDelDirs = [
