@@ -299,6 +299,8 @@ class Builder {
     process.exit(1);
   })
   .lift();
+
+  export { app };
   `;
     await (0, _fsExtra.writeFile)((0, _path.resolve)(this.targetDir, `src/index.${type}`), formatCode(str));
   }

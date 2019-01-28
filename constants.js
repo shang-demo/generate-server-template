@@ -202,7 +202,7 @@ const components = {
   }]
 };
 exports.components = components;
-const cpDirs = ['config', `src/config/error.${type}`, `src/config/global.${type}`, `src/config/http.${type}`, 'src/types', 'tsconfig.json', '.eslintignore', '.nvmrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile'];
+const cpDirs = ['config', `src/config/error.${type}`, `src/config/global.${type}`, `src/config/http.${type}`, 'src/types', 'tsconfig.json', '.eslintignore', '.nvmrc', '.eslintrc.js', '.gitignore', 'gulpfile.js', 'Makefile', 'index.ts'];
 exports.cpDirs = cpDirs;
 const yjDelDirs = ['config/Dockerfiles', 'config/script-tools', 'config/remote.config.json', 'Makefile'];
 exports.yjDelDirs = yjDelDirs;
