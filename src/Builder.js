@@ -131,9 +131,14 @@ class Builder {
     pkg.name = name;
     pkg.dependencies = {};
 
+    delete pkg.devDependencies['@s4p/eslint-config'];
+    delete pkg.devDependencies['@ofa2/eslint-config-ofa2'];
+
     if (this.yj) {
-      delete pkg.devDependencies['@s4p/eslint-config'];
-      pkg.devDependencies['@ofa2/eslint-config-ofa2'] = '^1.0.0';
+      pkg.dependencies['@ofa2/eslint-config'] = '^2.0.0';
+    }
+    else {
+      pkg.dependencies['@s4p/eslint-config'] = '^2.0.1';
     }
 
     let p = pathResolve(this.targetDir, 'package.json');
@@ -146,7 +151,7 @@ class Builder {
     let cmd = `cd ${this.targetDir} && npm i ${this.packageRequired.join(' ')}`;
 
     if (this.skipInstall) {
-      return cmd.replace(/.*?&& npm i/, 'npm i');
+      return cmd.replace(/.*?&& npm i/, `cd ${this.targetDir}/server && npm i`);
     }
     await exec(cmd);
     return null;
