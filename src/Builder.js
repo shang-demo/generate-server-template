@@ -5,7 +5,6 @@ import format from 'prettier-eslint';
 import { camelize } from 'humps';
 import { writeFile, readJson, ensureFile, ensureDir, stat } from 'fs-extra';
 import { components, cpDirs, yjDelDirs, yjCpDirs, packageRequired } from './constants';
-import { getLockPath } from './yarn-lock/index';
 import { parseName } from './package-info-parser';
 import { exec } from './util';
 
@@ -143,15 +142,11 @@ class Builder {
 
   async buildPackage() {
     await this.createPackageJson();
-    let { lockPath, isExists } = await getLockPath(this);
-    if (!this.disableLock && isExists) {
-      await exec(`cp ${lockPath} ${pathResolve(this.targetDir, 'yarn.lock')}`);
-    }
 
-    let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
+    let cmd = `cd ${this.targetDir} && npm i ${this.packageRequired.join(' ')}`;
 
     if (this.skipInstall) {
-      return cmd.replace(/.*?&& yarnpkg add/, 'yarnpkg add');
+      return cmd.replace(/.*?&& npm i/, 'npm i');
     }
     await exec(cmd);
     return null;
