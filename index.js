@@ -120,7 +120,7 @@ async function parseArgv() {
     senecaServer,
     customerErrors,
     yj,
-    skipInstall: si
+    skipInstall: yj ? true : si
   };
   let message = '';
   Object.keys(info).forEach(key => {
@@ -128,11 +128,6 @@ async function parseArgv() {
       message = `${message}${key}: ${info[key]}\n  `;
     }
   });
-
-  if (info.yj) {
-    info.skipInstall = true;
-  }
-
   let {
     confirm
   } = await (0, _inquirer.prompt)({
