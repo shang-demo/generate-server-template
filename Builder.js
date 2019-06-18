@@ -19,8 +19,6 @@ var _fsExtra = require("fs-extra");
 
 var _constants = require("./constants");
 
-var _index = require("./yarn-lock/index");
-
 var _packageInfoParser = require("./package-info-parser");
 
 var _util = require("./util");
@@ -163,19 +161,10 @@ class Builder {
 
   async buildPackage() {
     await this.createPackageJson();
-    let {
-      lockPath,
-      isExists
-    } = await (0, _index.getLockPath)(this);
-
-    if (!this.disableLock && isExists) {
-      await (0, _util.exec)(`cp ${lockPath} ${(0, _path.resolve)(this.targetDir, 'yarn.lock')}`);
-    }
-
-    let cmd = `cd ${this.targetDir} && yarnpkg add ${this.packageRequired.join(' ')}`;
+    let cmd = `cd ${this.targetDir} && npm i ${this.packageRequired.join(' ')}`;
 
     if (this.skipInstall) {
-      return cmd.replace(/.*?&& yarnpkg add/, 'yarnpkg add');
+      return cmd.replace(/.*?&& npm i/, 'npm i');
     }
 
     await (0, _util.exec)(cmd);
