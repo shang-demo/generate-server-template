@@ -48,7 +48,7 @@ class Builder {
     templateDir,
     targetDir,
     yj,
-    disableLock = false,
+    disableLock = true,
     skipInstall = false
   }) {
     Object.assign(this, {

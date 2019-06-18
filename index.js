@@ -128,6 +128,11 @@ async function parseArgv() {
       message = `${message}${key}: ${info[key]}\n  `;
     }
   });
+
+  if (info.yj) {
+    info.skipInstall = true;
+  }
+
   let {
     confirm
   } = await (0, _inquirer.prompt)({
