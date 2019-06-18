@@ -130,6 +130,10 @@ async function parseArgv() {
     }
   });
 
+  if (info.yj) {
+    info.skipInstall = true;
+  }
+
   let { confirm } = await prompt({
     type: 'confirm',
     name: 'confirm',
